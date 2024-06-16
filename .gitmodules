@@ -1,3 +1,0 @@
-[submodule "vendor/i2cdriver"]
-	path = vendor/i2cdriver
-	url = https://github.com/jamesbowman/i2cdriver.git
