@@ -7,7 +7,7 @@
 
 #include "mtv230m.h"
 
-#define cprintf(...) if (settings.silence) printf(__VA_ARGS__)
+#define cprintf(...) if (!settings.silence) printf(__VA_ARGS__)
 
 #define CASE    break; case
 #define DEFAULT break; default
@@ -28,26 +28,43 @@ struct Settings {
     uint16_t startPosition;
     uint16_t length;
     bool silence; 
-} settings = {0};
+} settings = { .rgb = false, .startPosition = 0, .length = 1, .silence = false};
+
+struct Defaults {
+    char filepath[128];
+} defaults = { "mtv230m_osd.bin" };
 
 signed main(int argcount, char** argvals) 
 {
+    parse_arguments(argcount, argvals);
+
     FILE* osdFile;
 
     osdFile = fopen(settings.filepath, "wb");
     if (osdFile == NULL)
     {
-        fclose(osdFile);
         perror("Failed to open firmware file: ");
         exit(EXIT_FAILURE);
     }
     
+    uint8_t aaa[2*18] = {0};
+
     uint16_t lastCharPos = settings.startPosition + settings.length - 1;
     for (uint16_t symbol = settings.startPosition; symbol <= lastCharPos; symbol++) 
     {
-        uint16_t character[16][18] = {0};
-        fread(character, )
+        cprintf("Symbol %u\n", symbol);
+        size_t br = fread(aaa, 2, 18, osdFile);
+        for(int i = 0; i < 2*18; i += 2) {
+            char line[16] = {0};
+            for (int j = 0; j < 16; j++)
+                line[j] = (aaa[i] >> j & 1)? '.' : ' ';
+            cprintf("|%s|\n", line);
+        }
+            
     }
+
+    fclose(osdFile);
+    return(0);
 }
 
 int32_t parse_arguments(int argcount, char** args)
@@ -94,5 +111,10 @@ int32_t parse_arguments(int argcount, char** args)
         cprintf("RGB mode not supported yet!\n");
         exit(EXIT_FAILURE);
     }
+
+    if (settings.filepath[0] == 0)
+        strncpy(settings.filepath, defaults.filepath, 128);
+
+    
 }
 

@@ -6,7 +6,7 @@
 #include <stdint.h>
 #include <stdbool.h>
 
-#include <i2cdriver.h>
+#include "i2cdriver.h"
 
 // const uint8_t MTV230M_MAX_CODE_PAGE = 255;
 #define MTV230M_MAX_CODE_PAGE 255

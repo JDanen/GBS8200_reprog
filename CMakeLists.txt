@@ -37,3 +37,19 @@ target_include_directories(mtv230flash PUBLIC
 	source/mtv230m)	
 # target_link_libraries(mtv230dump PUBLIC i2cdriver mtv230m)
 target_compile_features(mtv230flash PRIVATE c_std_11)
+
+
+################	OSD Decoder		###################
+
+add_executable(mtv230osdec
+	source/i2cdriver/i2cdriver.h
+	source/i2cdriver/i2cdriver.c
+	source/mtv230m/mtv230m.h
+	source/mtv230m/mtv230m.c
+	source/osd/main.c)
+
+target_include_directories(mtv230osdec PUBLIC
+	source/i2cdriver
+	source/mtv230m)	
+
+target_compile_features(mtv230osdec PRIVATE c_std_11)
